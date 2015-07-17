@@ -232,11 +232,10 @@ define("scripts/game.js", function(exports){
 	
 	    gameOver.show();
 	    
-	    // timeline.setTimeout(function(){
-	    //     // sence.switchSence( "home-menu" );
-	    //     // TODO: require 出现互相引用时，造成死循环，这个问题需要跟进，这里暂时用 postMessage 代替
-	    //     message.postMessage( "home-menu", "sence.switchSence" );
-	    // }, 2000);
+	    timeline.setTimeout(function(){
+	        gameOver.hide();
+	        message.postMessage( "home-menu", "sence.switchSence" );
+	    }, 2000);
 	
 	    scoreNumber = 0;
 	    volleyNum = 2;
@@ -312,12 +311,6 @@ define("scripts/game.js", function(exports){
 	        fruits[i].remove();
 	    background.stop();
 	});
-	
-	message.addEventListener("click", function(){
-	    state( "click-enable" ).off();
-	    gameOver.hide();
-	    message.postMessage( "home-menu", "sence.switchSence" );
-	});;
 
 	return exports;
 });
