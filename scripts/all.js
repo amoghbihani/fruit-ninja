@@ -577,7 +577,7 @@ define("scripts/sence.js", function(exports){
 	
 	// initialize sence
 	exports.init = function(){
-	    menuSnd = sound.create( "sound/menu" );
+	    menuSnd = sound.createLooped( "sound/menu" );
 	    gameStartSnd = sound.create( "sound/start" );
 		[ background, homeMask, logo, ninja, homeDesc, dojo, newSign, newGame, quit, score, lose, developing, gameOver, flash /*, fps */ ].invoke( "set" );
 	    // setInterval( fps.update.bind( fps ), 500 );
@@ -2662,9 +2662,19 @@ define("scripts/lib/sound.js", function(exports){
 		autoload: true, 
 		loop: false 
 	};
+
+	var loopconfig = { 
+		formats: [ "ogg", "mp3" ], 
+		preload: true, 
+		autoload: true, 
+		loop: true 
+	};
 	
-	function ClassBuzz( src ){
-	    this.sound = new buzz.sound( src, config );
+	function ClassBuzz( src, loop ){
+		if (loop == true)
+			this.sound = new buzz.sound( src, loopconfig);
+		else
+	    	this.sound = new buzz.sound( src, config );
 	}
 	
 	ClassBuzz.prototype.play = function( s ){
@@ -2685,7 +2695,14 @@ define("scripts/lib/sound.js", function(exports){
 		if( !supported )
 		    return unSupported;
 		else
-	    	return new ClassBuzz( src );
+	    	return new ClassBuzz( src, false );
+	}
+
+	exports.createLooped = function( src ){
+		if(!supported)
+			return unSupported;
+		else
+			return new ClassBuzz( src, true)
 	}
 	
 	function unSupported(){
