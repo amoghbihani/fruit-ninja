@@ -2657,24 +2657,15 @@ define("scripts/lib/sound.js", function(exports){
 	var supported = buzz.isSupported();
 	
 	var config = { 
-		formats: [ "ogg", "mp3" ], 
+		formats: [ "ogg" ], 
 		preload: true, 
 		autoload: true, 
 		loop: false 
 	};
-
-	var loopconfig = { 
-		formats: [ "ogg", "mp3" ], 
-		preload: true, 
-		autoload: true, 
-		loop: true 
-	};
 	
 	function ClassBuzz( src, loop ){
-		if (loop == true)
-			this.sound = new buzz.sound( src, loopconfig);
-		else
-	    	this.sound = new buzz.sound( src, config );
+		config.loop = loop || false;
+	    this.sound = new buzz.sound( src, config );
 	}
 	
 	ClassBuzz.prototype.play = function( s ){
