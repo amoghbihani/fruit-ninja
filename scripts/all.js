@@ -395,7 +395,6 @@ define("scripts/main.js", function(exports){
 	var timeline = require("scripts/timeline");
 	var tools = require("scripts/tools");
 	var sence = require("scripts/sence");
-	var Ucren = require("scripts/lib/ucren");
 	var buzz = require("scripts/lib/buzz");
 	var control = require("scripts/control");
 	var csl = require("scripts/object/console");
@@ -459,18 +458,6 @@ define("scripts/main.js", function(exports){
 	        return ;
 	    }
 	});
-	
-	var tip = "";
-	
-	if( !Ucren.isChrome )
-	    tip = "$为了获得最佳流畅度，推荐您使用 <span class='b'>Google Chrome</span> 体验本游戏";
-	
-	if( !buzz.isSupported() )
-	    tip = tip.replace( "$", "您的浏览器不支持 &lt;audio&gt 播放声效，且" );
-	
-	tip = tip.replace( "$", "" );
-	
-	Ucren.Element( "browser" ).html( tip );;
 
 	return exports;
 });
