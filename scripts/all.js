@@ -451,8 +451,6 @@ define("scripts/main.js", function(exports){
 	        fruit.broken( angle );
 	        if( fruit.isHomeMenu )
 	            switch( 1 ){
-	                case fruit.isDojoIcon:
-	                    sence.switchSence( "dojo-body" ); break;
 	                case fruit.isNewGameIcon:
 	                    sence.switchSence( "game-body" ); break;
 	                case fruit.isQuitIcon:
@@ -549,11 +547,9 @@ define("scripts/sence.js", function(exports){
 	var ninja = require("scripts/object/ninja")
 	var homeDesc = require("scripts/object/home-desc");
 	
-	var dojo = require("scripts/object/dojo");
 	var newGame = require("scripts/object/new-game");
 	var quit = require("scripts/object/quit");
-	var newSign = require("scripts/object/new");
-	var peach, sandia, boom;
+	var sandia, boom;
 	
 	// the elements in game body
 	var score = require("scripts/object/score");
@@ -579,7 +575,7 @@ define("scripts/sence.js", function(exports){
 	exports.init = function(){
 	    menuSnd = sound.createLooped( "sound/menu" );
 	    gameStartSnd = sound.create( "sound/start" );
-		[ background, homeMask, logo, ninja, homeDesc, dojo, newSign, newGame, quit, score, lose, developing, gameOver, flash /*, fps */ ].invoke( "set" );
+		[ background, homeMask, logo, ninja, homeDesc, newGame, quit, score, lose, developing, gameOver, flash /*, fps */ ].invoke( "set" );
 	    // setInterval( fps.update.bind( fps ), 500 );
 	};
 	
@@ -596,7 +592,6 @@ define("scripts/sence.js", function(exports){
 	        senceState.set( "entering" );
 	        switch( name ){
 	            case "home-menu": this.showMenu( onShow ); break;
-	            case "dojo-body": this.showDojo( onShow ); break;
 	            case "game-body": this.showNewGame( onShow ); break;
 	            case "quit-body": this.showQuit( onShow ); break;
 	        }
@@ -605,7 +600,7 @@ define("scripts/sence.js", function(exports){
 	    var onShow = function(){
 	        senceState.set( "ready" );
 	
-	        if( name == "dojo-body" || name == "quit-body" ){
+	        if( name == "quit-body" ){
 	            exports.switchSence( "home-menu" );
 	        }
 	    };
@@ -614,7 +609,6 @@ define("scripts/sence.js", function(exports){
 	
 	    if( curSence.isunset() ) onHide();
 	    else if( curSence.is( "home-menu" ) ) this.hideMenu( onHide );
-	    else if( curSence.is( "dojo-body" ) ) this.hideDojo( onHide );
 	    else if( curSence.is( "game-body" ) ) this.hideNewGame( onHide );
 	    else if( curSence.is( "quit-body" ) ) this.hideQuit( onHide );
 	};
@@ -624,12 +618,11 @@ define("scripts/sence.js", function(exports){
 	    var callee = arguments.callee;
 	    var times = callee.times = ++ callee.times || 1;
 	
-	    peach = fruit.create( "peach", 137, 333, true );
 	    sandia = fruit.create( "sandia", 330, 322, true );
 	    boom = fruit.create( "boom", 552, 367, true, 2500 );
 	
-	    [ peach, sandia, boom ].forEach(function( f ){ f.isHomeMenu = 1; });
-	    peach.isDojoIcon = sandia.isNewGameIcon = boom.isQuitIcon = 1;
+	    [ sandia, boom ].forEach(function( f ){ f.isHomeMenu = 1; });
+	    sandia.isNewGameIcon = boom.isQuitIcon = 1;
 	
 	    var group = [
 	    	[ homeMask, 0 ], 
@@ -638,19 +631,15 @@ define("scripts/sence.js", function(exports){
 	    	[ ninja, 500 ], 
 	    	[ homeDesc, 1500 ], 
 	
-	    	[ dojo, 2000 ], 
 	    	[ newGame, 2000 ], 
 	    	[ quit, 2000 ],
-	        
-	        [ newSign, 2000 ],
 	
-	        [ peach, 2000 ],
 	        [ sandia, 2000 ],
 	        [ boom, 2000 ]
 	    ];
 	
 	    group.invoke( "show" );
-	    [ peach, sandia ].invoke( "rotate", 2500 );
+	    [ sandia ].invoke( "rotate", 2500 );
 	
 	    menuSnd.play();
 	    setTimeout( callback, 2500 );
@@ -658,9 +647,9 @@ define("scripts/sence.js", function(exports){
 	
 	// to exit home page menu
 	exports.hideMenu = function( callback ){
-	    [ newSign, dojo, newGame, quit ].invoke( "hide" );
+	    [ newGame, quit ].invoke( "hide" );
 	    [ homeMask, logo, ninja, homeDesc ].invoke( "hide" );
-	    [ peach, sandia, boom ].invoke( "fallOff", 150 );
+	    [ sandia, boom ].invoke( "fallOff", 150 );
 	
 	    menuSnd.stop();
 	    setTimeout( callback, fruit.getDropTimeSetting() );
@@ -683,18 +672,6 @@ define("scripts/sence.js", function(exports){
 	    lose.hide();
 	
 	    gameStartSnd.stop();
-	    setTimeout( callback, 1000 );
-	};
-	
-	// to enter dojo mode
-	exports.showDojo = function( callback ){
-	    developing.show( 250 );
-	    setTimeout( callback, 1500 );
-	};
-	
-	// to exit dojo mode
-	exports.hideDojo = function( callback ){
-	    // TODO: 
 	    setTimeout( callback, 1000 );
 	};
 	
@@ -4136,20 +4113,6 @@ define("scripts/object/developing.js", function(exports){
 	return exports;
 });
 
-
-/**
- * @source D:\hosting\demos\fruit-ninja\output\scripts\object\dojo.js
- */ 
-define("scripts/object/dojo.js", function(exports){
-	var rotate = require("scripts/factory/rotate");
-	var tween = require("scripts/lib/tween");
-	
-	exports = rotate.create("images/dojo.png", 41, 240, 175, 175, 1e-5, tween.exponential.co, 500);;
-
-	return exports;
-});
-
-
 /**
  * @source D:\hosting\demos\fruit-ninja\output\scripts\object\flame.js
  */ 
@@ -4837,90 +4800,6 @@ define("scripts/object/new-game.js", function(exports){
 	var tween = require("scripts/lib/tween");
 	
 	exports = rotate.create("images/new-game.png", 244, 231, 195, 195, 1e-5, tween.exponential.co, 500);;
-
-	return exports;
-});
-
-
-/**
- * @source D:\hosting\demos\fruit-ninja\output\scripts\object\new.js
- */ 
-define("scripts/object/new.js", function(exports){
-	var layer = require("scripts/layer");
-	var tween = require("scripts/lib/tween");
-	var timeline = require("scripts/timeline");
-	var Ucren = require("scripts/lib/ucren");
-	
-	var image;
-	var cycleTime = 300;
-	
-	var sx = 129, sy = 328, ex = 170, ey = 221, sw = 0, sh = 0, ew = 70, eh = 42, dy = 8;
-	
-	var showAnim = tween.exponential.co;
-	var jumpAnim = tween.quadratic.ci;
-	
-	exports.anims = [];
-	
-	exports.set = function(){
-	    image = layer.createImage( "default", "images/new.png", sx, sy, sw, sh );
-	};
-	
-	exports.unset = function(){
-	    
-	};
-	
-	exports.show = function( start ){
-		timeline.createTask({ 
-	        start: start, duration: 500,
-	        data: [ sx, ex, sy, ey, sw, ew, sh, eh ],
-	        object: this, onTimeUpdate: this.onShowing, onTimeStart: this.onShowStart, onTimeEnd: this.onShowEnd, 
-	        recycle: this.anims 
-	    });
-	};
-	
-	exports.hide = function( start ){
-	    this.anims.clear();
-	    timeline.createTask({ 
-	        start: start, duration: 500,
-	        data: [ ex, sx, ey, sy, ew, sw, eh, sh ],
-	        object: this, onTimeUpdate: this.onShowing, 
-	        recycle: this.anims 
-	    });
-	};
-	
-	exports.jump = function(){
-	    this.anims.clear();
-	    timeline.createTask({ start: 0, duration: -1, object: this, onTimeUpdate: this.onJumping, recycle: this.anims });
-	};
-	
-	// 显示相关
-	
-	exports.onShowStart = function(){
-	};
-	
-	exports.onShowing = function( time, sx, ex, sy, ey, sw, ew, sh, eh ){
-	    image.attr({ 
-	    	x: showAnim( time, sx, ex - sx, 500 ), 
-	    	y: showAnim( time, sy, ey - sy, 500 ),
-	    	width: showAnim( time, sw, ew - sw, 500 ),
-	    	height: showAnim( time, sh, eh - sh, 500 )
-	    });
-	};
-	
-	exports.onShowEnd = function(){
-	    this.jump();
-	};
-	
-	// 跳跃相关
-	
-	exports.onJumping = function(time){
-		var t = parseInt(time / cycleTime);
-	
-		time = time % cycleTime;
-		if( t % 2 ) time = cycleTime - time;
-		
-		image.attr("y", jumpAnim( time, ey, dy, cycleTime ));
-	};;
 
 	return exports;
 });
