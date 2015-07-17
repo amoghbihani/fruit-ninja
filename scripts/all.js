@@ -247,6 +247,8 @@ define("scripts/game.js", function(exports){
 	    if( score > volleyNum * volleyMultipleNumber )
 	        volleyNum ++,
 	        volleyMultipleNumber += 50;
+	    if (score > (localStorage.bestScore || 0))
+	    	localStorage.bestScore = score;
 	};
 	
 	exports.sliceAt = function( fruit, angle ){
@@ -666,6 +668,7 @@ define("scripts/sence.js", function(exports){
 	
 	// to enter game body
 	exports.showNewGame = function( callback ){
+		score.set();
 	    score.show();
 	    lose.show();
 	    game.start();
